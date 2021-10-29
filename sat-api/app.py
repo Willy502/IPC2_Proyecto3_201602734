@@ -1,7 +1,7 @@
 from flask import Flask
 from config import XML_TEMP_DATA
 from routes.routes import application
-from controllers.ResponseController import onError
+from controllers.response_controller import onError
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = XML_TEMP_DATA

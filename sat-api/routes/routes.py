@@ -1,7 +1,7 @@
 from flask import Blueprint, Response, request
 from config import API_BASE_ROUTE
-from controllers.ResponseController import onError, onSuccess
-from controllers.ProcessController import *
+from controllers.response_controller import onError, onSuccess
+from controllers.process_controller import *
 
 application = Blueprint('routes', __name__)
 

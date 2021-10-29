@@ -1,6 +1,6 @@
 from config import XML_DATABASE, XML_TEMP_DATA, ALLOWED_EXTENSIONS, BASEDIR
-from controllers.ResponseController import onError, onSuccess
-from controllers.XmlController import *
+from controllers.response_controller import onError, onSuccess
+from controllers.xml_controller import *
 from werkzeug.utils import secure_filename
 import os
 
@@ -27,10 +27,15 @@ class ProcessController:
         file.save(saved_route) 
 
         if os.path.isfile(saved_route):
-
-            XmlController().create_authorizations_file()
+            
+            xml_controller = XmlController()
+            xml_controller.create_authorizations_file()
+            dte_list = xml_controller.build_dte(saved_route)
+            self.validate_dte(dte_list = dte_list)
             os.remove(saved_route)
             
         return onSuccess('It works', 200)
 
-
+    def validate_dte(self, dte_list):
+        for dte in dte_list:
+            pass
