@@ -1,5 +1,6 @@
 from config import XML_DATABASE, XML_TEMP_DATA, ALLOWED_EXTENSIONS, BASEDIR
 from controllers.ResponseController import onError, onSuccess
+from controllers.XmlController import *
 from werkzeug.utils import secure_filename
 import os
 
@@ -26,6 +27,10 @@ class ProcessController:
         file.save(saved_route) 
 
         if os.path.isfile(saved_route):
+
+            XmlController().create_authorizations_file()
             os.remove(saved_route)
             
         return onSuccess('It works', 200)
+
+
