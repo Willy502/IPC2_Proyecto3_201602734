@@ -1,5 +1,6 @@
 import xml.etree.cElementTree as ET
 from xml.dom import minidom
+from datetime import datetime
 import os
 from config import XML_DATABASE, XML_TEMP_DATA, BASEDIR
 from models.dte import *
@@ -48,6 +49,7 @@ class XmlController:
         root = tree.getroot()
         auth = ET.SubElement(root, "AUTORIZACION")
 
+        ET.SubElement(auth, "FECHA").text = str(datetime.today().strftime('%d/%m/%Y'))
         ET.SubElement(auth, "FACTURAS_RECIBIDAS").text = str(counter_information["total_dte"])
         errores = ET.SubElement(auth, "ERRORES")
         ET.SubElement(errores, "NIT_EMISOR").text = str(counter_information["invalid_emisor"])
@@ -55,6 +57,11 @@ class XmlController:
         ET.SubElement(errores, "IVA").text = str(counter_information["bad_iva"])
         ET.SubElement(errores, "TOTAL").text = str(counter_information["bad_total"])
         ET.SubElement(auth, "FACTURAS_CORRECTAS").text = str(counter_information["total_dte_no_errors"])
+        # Cantidad emisores
+        # Cantidad receptores
+        autorizaciones = ET.SubElement(auth, "LISTADO_AUTORIZACIONES")
+        aprob = ET.SubElement(autorizaciones, "APROBACION") # LAS APROBACIONES VAN EN UN FOR
+        ET.SubElement(autorizaciones, "TOTAL_APROBACIONES").text = str(counter_information["total_dte_no_errors"])
 
         tree = ET.ElementTree(root)
         data = minidom.parseString(ET.tostring(root))
