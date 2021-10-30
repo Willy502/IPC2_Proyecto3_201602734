@@ -38,5 +38,5 @@ class XmlController:
                     elif element.tag.upper() == "TOTAL":
                         dte.total = element.text.lstrip().rstrip()
 
-                    dte_list.append(dte)
+                dte_list.append(dte)
         return dte_list

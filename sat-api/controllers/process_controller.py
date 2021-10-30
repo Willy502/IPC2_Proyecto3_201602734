@@ -38,4 +38,32 @@ class ProcessController:
 
     def validate_dte(self, dte_list):
         for dte in dte_list:
-            pass
+            nit_emisor_valid = self.validate_nit(dte.nit_emisor)
+            print(nit_emisor_valid)
+            nit_receptor_valid = self.validate_nit(dte.nit_receptor)
+            print(nit_receptor_valid)
+
+    def validate_nit(self, nit):
+        valid = False
+        nit.replace("-","").replace(" ", "")
+        dig_validador = nit[-1]
+        dig_nit = list(nit[0:-1])
+        dig_nit_rev = list(reversed(dig_nit))
+        suma = 0
+        base = 1
+        for n in dig_nit_rev:
+            base += 1
+            suma += int(n) * base
+
+        result = suma % 11
+        comp = 11 - result
+        new_comp = comp % 11
+
+        if new_comp == 10:
+            if dig_validador == "k":
+                valid = True
+        else:
+            if new_comp == int(dig_validador):
+                valid = True
+        
+        return valid
