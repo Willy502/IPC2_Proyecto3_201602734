@@ -28,20 +28,49 @@ class ProcessController:
 
         if os.path.isfile(saved_route):
             
-            xml_controller = XmlController()
-            xml_controller.create_authorizations_file()
-            dte_list = xml_controller.build_dte(saved_route)
+            self.xml_controller = XmlController()
+            self.xml_controller.create_authorizations_file()
+            dte_list = self.xml_controller.build_dte(saved_route)
             self.validate_dte(dte_list = dte_list)
             os.remove(saved_route)
             
         return onSuccess('It works', 200)
 
     def validate_dte(self, dte_list):
+
+        counter = {
+            "invalid_emisor" : 0,
+            "invalid_receptor" : 0,
+            "bad_iva" : 0,
+            "bad_total" : 0,
+            "double_reference" : 0,
+            "total_dte" : 0,
+            "total_dte_no_errors" : 0
+        }
+
         for dte in dte_list:
+            counter["total_dte"] += 1
             nit_emisor_valid = self.validate_nit(dte.nit_emisor)
-            print(nit_emisor_valid)
             nit_receptor_valid = self.validate_nit(dte.nit_receptor)
-            print(nit_receptor_valid)
+            iva_valid = self.validate_iva(dte)
+            total_valid = self.validate_total(dte)
+
+            if nit_emisor_valid and nit_receptor_valid and iva_valid and total_valid:
+                counter["total_dte_no_errors"] += 1
+            else:
+                if nit_emisor_valid == False:
+                    counter["invalid_emisor"] += 1
+                
+                if nit_receptor_valid == False:
+                    counter["invalid_receptor"] += 1
+
+                if iva_valid == False:
+                    counter["bad_iva"] += 1
+                
+                if total_valid == False:
+                    counter["bad_total"] += 1
+
+        self.xml_controller.write_authorization(counter_information = counter)
 
     def validate_nit(self, nit):
         valid = False
@@ -66,4 +95,16 @@ class ProcessController:
             if new_comp == int(dig_validador):
                 valid = True
         
+        return valid
+
+    def validate_iva(self, dte):
+        valid = False
+        if float(dte.iva) == float(dte.valor) * 0.12:
+            valid = True
+        return valid
+
+    def validate_total(self, dte):
+        valid = False
+        if (float(dte.valor) * 0.12) + float(dte.valor) == float(dte.total):
+            valid = True
         return valid
