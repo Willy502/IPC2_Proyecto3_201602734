@@ -57,8 +57,8 @@ class XmlController:
         ET.SubElement(errores, "IVA").text = str(counter_information["bad_iva"])
         ET.SubElement(errores, "TOTAL").text = str(counter_information["bad_total"])
         ET.SubElement(auth, "FACTURAS_CORRECTAS").text = str(counter_information["total_dte_no_errors"])
-        # Cantidad emisores
-        # Cantidad receptores
+        ET.SubElement(auth, "CANTIDAD_EMISORES").text = str(counter_information["emisores"])
+        ET.SubElement(auth, "CANTIDAD_RECEPTORES").text = str(counter_information["receptores"])
         autorizaciones = ET.SubElement(auth, "LISTADO_AUTORIZACIONES")
         aprob = ET.SubElement(autorizaciones, "APROBACION") # LAS APROBACIONES VAN EN UN FOR
         ET.SubElement(autorizaciones, "TOTAL_APROBACIONES").text = str(counter_information["total_dte_no_errors"])
@@ -68,10 +68,12 @@ class XmlController:
         file = open(auth_route, "w")
         new_data = data.toprettyxml()
         file.write(new_data)
+        file.close()
 
         # Remove empty lines
-        with open(auth_route) as xmlfile:
-            lines = [line for line in xmlfile if line.strip() is not ""]
+        with open(auth_route, "r") as xmlfile:
+            lines = [line for line in xmlfile.readlines() if line.strip() is not ""]
 
         with open(auth_route, "w") as xmlfile:
             xmlfile.writelines(lines)
+            file.close()

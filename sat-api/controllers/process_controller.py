@@ -45,8 +45,12 @@ class ProcessController:
             "bad_total" : 0,
             "double_reference" : 0,
             "total_dte" : 0,
-            "total_dte_no_errors" : 0
+            "total_dte_no_errors" : 0,
+            "emisores" : 0,
+            "receptores" : 0
         }
+
+        dte_no_errors = []
 
         for dte in dte_list:
             counter["total_dte"] += 1
@@ -57,6 +61,7 @@ class ProcessController:
 
             if nit_emisor_valid and nit_receptor_valid and iva_valid and total_valid:
                 counter["total_dte_no_errors"] += 1
+                dte_no_errors.append(dte)
             else:
                 if nit_emisor_valid == False:
                     counter["invalid_emisor"] += 1
@@ -69,6 +74,18 @@ class ProcessController:
                 
                 if total_valid == False:
                     counter["bad_total"] += 1
+
+        temp = []
+        for dte in dte_no_errors:
+            if dte.nit_emisor not in temp:
+                temp.append(dte.nit_emisor)
+                counter["emisores"] += 1
+
+        temp = []
+        for dte in dte_no_errors:
+            if dte.nit_receptor not in temp:
+                temp.append(dte.nit_receptor)
+                counter["receptores"] += 1
 
         self.xml_controller.write_authorization(counter_information = counter)
 
