@@ -4,6 +4,7 @@ from datetime import datetime
 import os
 from config import XML_DATABASE, XML_TEMP_DATA, BASEDIR
 from models.dte import *
+from controllers.response_controller import onError, onSuccess
 
 class XmlController:
 
@@ -14,6 +15,19 @@ class XmlController:
 
             tree = ET.ElementTree(root)
             tree.write(auth_route)
+
+    def read_all_file(self):
+        auth_route = BASEDIR + XML_DATABASE
+        if os.path.isfile(auth_route) == False:
+            return onError('No data available', 404)
+
+        data = ''
+        with open(auth_route, 'r') as file:
+            data = file.read().split("\n",1)[1]
+
+        return onSuccess(data = data, message = 'Data retrieved successfully')
+
+        
 
     def build_dte(self, file):
         

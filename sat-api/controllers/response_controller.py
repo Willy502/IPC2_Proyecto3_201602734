@@ -6,7 +6,16 @@ def onError(message, code = 500):
         }
     }, code
 
-def onSuccess(data, code = 200):
-    return {
-        'data' : data
-    }, code
+def onSuccess(data = None, message = '', code = 200):
+
+    response = {
+        'data' : data,
+        'message' : message
+    }
+    
+    if data is None:
+        response = {
+            'message' : message
+        }
+
+    return response, code

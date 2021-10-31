@@ -34,7 +34,7 @@ class ProcessController:
             self.validate_dte(dte_list = dte_list)
             os.remove(saved_route)
             
-        return onSuccess('It works', 200)
+        return onSuccess(message = 'Data saved successfully', code = 200)
 
     def validate_dte(self, dte_list):
 
