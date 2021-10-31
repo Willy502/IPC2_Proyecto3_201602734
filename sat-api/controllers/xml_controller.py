@@ -27,8 +27,6 @@ class XmlController:
 
         return onSuccess(data = data, message = 'Data retrieved successfully')
 
-        
-
     def build_dte(self, file):
         
         tree = ET.parse(file)
