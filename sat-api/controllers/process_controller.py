@@ -47,7 +47,8 @@ class ProcessController:
             "total_dte" : 0,
             "total_dte_no_errors" : 0,
             "emisores" : 0,
-            "receptores" : 0
+            "receptores" : 0,
+            "dtes" : []
         }
 
         dte_no_errors = []
@@ -86,6 +87,14 @@ class ProcessController:
             if dte.nit_receptor not in temp:
                 temp.append(dte.nit_receptor)
                 counter["receptores"] += 1
+
+        temp = []
+        for dte in dte_no_errors:
+            if dte.referencia not in temp:
+                temp.append(dte.referencia)
+                counter["dtes"].append(dte)
+            else:
+                counter["double_reference"] += 1
 
         self.xml_controller.write_authorization(counter_information = counter)
 

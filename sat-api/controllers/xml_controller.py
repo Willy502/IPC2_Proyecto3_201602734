@@ -60,7 +60,11 @@ class XmlController:
         ET.SubElement(auth, "CANTIDAD_EMISORES").text = str(counter_information["emisores"])
         ET.SubElement(auth, "CANTIDAD_RECEPTORES").text = str(counter_information["receptores"])
         autorizaciones = ET.SubElement(auth, "LISTADO_AUTORIZACIONES")
-        aprob = ET.SubElement(autorizaciones, "APROBACION") # LAS APROBACIONES VAN EN UN FOR
+        for approved in counter_information["dtes"]:
+            print("HOLA")
+            aprob = ET.SubElement(autorizaciones, "APROBACION")
+            ET.SubElement(aprob, "NIT_EMISOR").text = str(approved.nit_emisor)
+            ET.SubElement(aprob, "CODIGO_APROBACION").text = str(datetime.today().strftime('%d%m%Y')) # TODO: FALTA CORRELATIVO
         ET.SubElement(autorizaciones, "TOTAL_APROBACIONES").text = str(counter_information["total_dte_no_errors"])
 
         tree = ET.ElementTree(root)
