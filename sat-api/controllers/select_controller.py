@@ -17,7 +17,7 @@ class SelectController:
         info_tree = ET.parse(info_route)
         info_root = info_tree.getroot()
 
-        data = None
+        data = {}
         found = False
 
         for lista_autorizaciones in root:
@@ -32,11 +32,32 @@ class SelectController:
             if facturas_correctas <= 0:
                 return onError('No data available', 404)
 
+            aprobacion_list = []
             for child in lista_autorizaciones.find('LISTADO_AUTORIZACIONES'):
                 if child.tag.upper() == "APROBACION":
                     for element in child:
-                        print(element.tag)
-                
+                        if element.tag.upper() == "NIT_EMISOR":
+                            aprobacion_list.append(element.attrib['ref'])
+            
+            for dte_info in info_root:
+                if dte_info.find("REFERENCIA").text in aprobacion_list and dte_info.find("FECHA").text == fecha.text:
+                    for element in dte_info:
+                        data[dte_info.find("NIT_EMISOR").text] = {
+                            "iva_emitido" : 0,
+                            "iva_recibido" : 0
+                        }
+                        data[dte_info.find("NIT_RECEPTOR").text] = {
+                            "iva_emitido" : 0,
+                            "iva_recibido" : 0
+                        }
+            
+            for dte_info in info_root:
+                if dte_info.find("REFERENCIA").text in aprobacion_list and dte_info.find("FECHA").text == fecha.text:
+                    data[dte_info.find("NIT_EMISOR").text]["iva_emitido"] += float(dte_info.find("IVA").text)
+                    data[dte_info.find("NIT_RECEPTOR").text]["iva_recibido"] += float(dte_info.find("IVA").text)
+
+        if data != {}:
+            found = True
 
         if found == False:
             return onError('No data available', 404)
