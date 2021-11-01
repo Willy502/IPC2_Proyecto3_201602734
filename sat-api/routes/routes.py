@@ -15,9 +15,9 @@ def consulta_datos():
 def resumen_iva(fecha):
     return SelectController().select_iva_by_date_and_nit(date = fecha)
 
-@application.route(f'{API_BASE_ROUTE}/ResumenRango')
-def resumen_rango():
-    return onSuccess(message = 'It Works')
+@application.route(f'{API_BASE_ROUTE}/ResumenRango/<fecha_start>/<fecha_end>')
+def resumen_rango(fecha_start, fecha_end):
+    return SelectController().select_iva_by_date_range_and_nit(date_start = fecha_start, date_end = fecha_end)
 
 @application.route(f'{API_BASE_ROUTE}/Grafica')
 def grafica():
