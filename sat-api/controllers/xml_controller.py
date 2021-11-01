@@ -2,7 +2,7 @@ import xml.etree.cElementTree as ET
 from xml.dom import minidom
 from datetime import datetime
 import os
-from config import XML_DATABASE, XML_TEMP_DATA, BASEDIR
+from config import XML_DATABASE, XML_TEMP_DATA, BASEDIR, XML_DATABASE_INFO
 from models.dte import *
 from controllers.response_controller import onError, onSuccess
 
@@ -10,11 +10,18 @@ class XmlController:
 
     def create_authorizations_file(self):
         auth_route = BASEDIR + XML_DATABASE
+        info_route = BASEDIR + XML_DATABASE_INFO
         if os.path.isfile(auth_route) == False:
             root = ET.Element("LISTAAUTORIZACIONES")
 
             tree = ET.ElementTree(root)
             tree.write(auth_route)
+
+        if os.path.isfile(info_route) == False:
+            root_info = ET.Element("AUTORIZADAS")
+
+            tree_info = ET.ElementTree(root_info)
+            tree_info.write(info_route)
 
     def read_all_file(self):
         auth_route = BASEDIR + XML_DATABASE
@@ -92,5 +99,36 @@ class XmlController:
             lines = [line for line in xmlfile.readlines() if line.strip() is not ""]
 
         with open(auth_route, "w") as xmlfile:
+            xmlfile.writelines(lines)
+            file.close()
+
+    def write_authorization_info(self, dtes_info):
+        info_route = BASEDIR + XML_DATABASE_INFO
+        tree = ET.parse(info_route)
+        root = tree.getroot()
+
+        for dte in dtes_info:
+            dt = ET.SubElement(root, "DTE")
+            ET.SubElement(dt, "FECHA").text = str(dte.fecha)
+            ET.SubElement(dt, "TIEMPO").text = str(dte.tiempo)
+            ET.SubElement(dt, "REFERENCIA").text = str(dte.referencia)
+            ET.SubElement(dt, "NIT_EMISOR").text = str(dte.nit_emisor)
+            ET.SubElement(dt, "NIT_RECEPTOR").text = str(dte.nit_receptor)
+            ET.SubElement(dt, "VALOR").text = str(dte.valor)
+            ET.SubElement(dt, "IVA").text = str(dte.iva)
+            ET.SubElement(dt, "TOTAL").text = str(dte.total)
+
+        tree = ET.ElementTree(root)
+        data = minidom.parseString(ET.tostring(root))
+        file = open(info_route, "w")
+        new_data = data.toprettyxml()
+        file.write(new_data)
+        file.close()
+
+        # Remove empty lines
+        with open(info_route, "r") as xmlfile:
+            lines = [line for line in xmlfile.readlines() if line.strip() is not ""]
+
+        with open(info_route, "w") as xmlfile:
             xmlfile.writelines(lines)
             file.close()

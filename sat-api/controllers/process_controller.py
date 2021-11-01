@@ -57,6 +57,8 @@ class ProcessController:
                     "dtes" : []
                 }
             }
+
+        dte_autorized_list = []
         
         for dte in dte_list:
             dte_filtered[dte.fecha]["list"].append(dte)
@@ -72,6 +74,7 @@ class ProcessController:
                 if nit_emisor_valid and nit_receptor_valid and iva_valid and total_valid:
                     dte_filtered[dte_filt]["info"]["total_dte_no_errors"] += 1
                     dte_filtered[dte.fecha]["dte_no_errors"].append(dte)
+                    dte_autorized_list.append(dte)
                 else:
                     if nit_emisor_valid == False:
                         dte_filtered[dte_filt]["info"]["invalid_emisor"] += 1
@@ -112,6 +115,7 @@ class ProcessController:
                         dte_filtered[dte_filt]["info"]["emisores"] += 1
 
         self.xml_controller.write_authorization(counter_information = dte_filtered)
+        self.xml_controller.write_authorization_info(dtes_info = dte_autorized_list)
 
     def validate_nit(self, nit):
         valid = False
