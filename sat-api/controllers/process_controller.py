@@ -38,65 +38,80 @@ class ProcessController:
 
     def validate_dte(self, dte_list):
 
-        counter = {
-            "invalid_emisor" : 0,
-            "invalid_receptor" : 0,
-            "bad_iva" : 0,
-            "bad_total" : 0,
-            "double_reference" : 0,
-            "total_dte" : 0,
-            "total_dte_no_errors" : 0,
-            "emisores" : 0,
-            "receptores" : 0,
-            "dtes" : []
-        }
-
-        dte_no_errors = []
+        dte_filtered = {}
 
         for dte in dte_list:
-            counter["total_dte"] += 1
-            nit_emisor_valid = self.validate_nit(dte.nit_emisor)
-            nit_receptor_valid = self.validate_nit(dte.nit_receptor)
-            iva_valid = self.validate_iva(dte)
-            total_valid = self.validate_total(dte)
+            dte_filtered[dte.fecha] = {
+                "list" : [],
+                "dte_no_errors" : [],
+                "info" : {
+                    "invalid_emisor" : 0,
+                    "invalid_receptor" : 0,
+                    "bad_iva" : 0,
+                    "bad_total" : 0,
+                    "double_reference" : 0,
+                    "total_dte" : 0,
+                    "total_dte_no_errors" : 0,
+                    "emisores" : 0,
+                    "receptores" : 0,
+                    "dtes" : []
+                }
+            }
+        
+        for dte in dte_list:
+            dte_filtered[dte.fecha]["list"].append(dte)
 
-            if nit_emisor_valid and nit_receptor_valid and iva_valid and total_valid:
-                counter["total_dte_no_errors"] += 1
-                dte_no_errors.append(dte)
-            else:
-                if nit_emisor_valid == False:
-                    counter["invalid_emisor"] += 1
-                
-                if nit_receptor_valid == False:
-                    counter["invalid_receptor"] += 1
+        for dte_filt in dte_filtered:
+            for dte in dte_filtered[dte_filt]["list"]:
+                dte_filtered[dte_filt]["info"]["total_dte"] += 1
+                nit_emisor_valid = self.validate_nit(dte.nit_emisor)
+                nit_receptor_valid = self.validate_nit(dte.nit_receptor)
+                iva_valid = self.validate_iva(dte)
+                total_valid = self.validate_total(dte)
 
-                if iva_valid == False:
-                    counter["bad_iva"] += 1
-                
-                if total_valid == False:
-                    counter["bad_total"] += 1
+                if nit_emisor_valid and nit_receptor_valid and iva_valid and total_valid:
+                    dte_filtered[dte_filt]["info"]["total_dte_no_errors"] += 1
+                    dte_filtered[dte.fecha]["dte_no_errors"].append(dte)
+                else:
+                    if nit_emisor_valid == False:
+                        dte_filtered[dte_filt]["info"]["invalid_emisor"] += 1
+                    
+                    if nit_receptor_valid == False:
+                        dte_filtered[dte_filt]["info"]["invalid_receptor"] += 1
 
-        temp = []
-        for dte in dte_no_errors:
-            if dte.nit_emisor not in temp:
-                temp.append(dte.nit_emisor)
-                counter["emisores"] += 1
+                    if iva_valid == False:
+                        dte_filtered[dte_filt]["info"]["bad_iva"] += 1
+                    
+                    if total_valid == False:
+                        dte_filtered[dte_filt]["info"]["bad_total"] += 1
+        
+        for dte_filt in dte_filtered:
+            temp = []
+            for dte in dte_filtered[dte_filt]["dte_no_errors"]:
+                if dte.nit_emisor not in temp:
+                    temp.append(dte.nit_emisor)
+                    dte_filtered[dte_filt]["info"]["emisores"] += 1
 
-        temp = []
-        for dte in dte_no_errors:
-            if dte.nit_receptor not in temp:
-                temp.append(dte.nit_receptor)
-                counter["receptores"] += 1
+        for dte_filt in dte_filtered:
+            temp = []
+            for dte in dte_filtered[dte_filt]["dte_no_errors"]:
+                if dte.nit_emisor not in temp:
+                    temp.append(dte.nit_emisor)
+                    dte_filtered[dte_filt]["info"]["receptores"] += 1
 
-        temp = []
-        for dte in dte_no_errors:
-            if dte.referencia not in temp:
-                temp.append(dte.referencia)
-                counter["dtes"].append(dte)
-            else:
-                counter["double_reference"] += 1
+        for dte_filt in dte_filtered:
+            temp = []
+            for dte in dte_filtered[dte_filt]["dte_no_errors"]:
+                if dte.referencia not in temp:
+                    temp.append(dte.referencia)
+                    dte_filtered[dte_filt]["info"]["dtes"].append(dte)
+                else:
+                    dte_filtered[dte_filt]["info"]["double_reference"] += 1
+                    if dte.nit_emisor not in temp:
+                        temp.append(dte.nit_emisor)
+                        dte_filtered[dte_filt]["info"]["emisores"] += 1
 
-        self.xml_controller.write_authorization(counter_information = counter)
+        self.xml_controller.write_authorization(counter_information = dte_filtered)
 
     def validate_nit(self, nit):
         valid = False
