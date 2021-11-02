@@ -106,21 +106,16 @@ class SelectController:
             for dte_info in info_root:
                 if dte_info.find("REFERENCIA").text in aprobacion_list and (datetime.strptime(fecha.text, '%d/%m/%Y') >= datetime_start and datetime.strptime(fecha.text, '%d/%m/%Y') <= datetime_end):
                     for element in dte_info:
-                        if dte_info.find("NIT_EMISOR").text not in data:
-                            data[dte_info.find("NIT_EMISOR").text] = {
-                                "iva_emitido" : 0,
-                                "iva_recibido" : 0
-                            }
-                        if dte_info.find("NIT_RECEPTOR").text not in data:
-                            data[dte_info.find("NIT_RECEPTOR").text] = {
-                                "iva_emitido" : 0,
-                                "iva_recibido" : 0
+                        if dte_info.find("FECHA").text not in data:
+                            data[dte_info.find("FECHA").text] = {
+                                "total_iva" : 0,
+                                "total_sin_iva" : 0
                             }
             
             for dte_info in info_root:
                 if dte_info.find("REFERENCIA").text in aprobacion_list and ((datetime.strptime(fecha.text, '%d/%m/%Y') >= datetime_start and datetime.strptime(fecha.text, '%d/%m/%Y') <= datetime_end)):
-                    data[dte_info.find("NIT_EMISOR").text]["iva_emitido"] += float(dte_info.find("IVA").text)
-                    data[dte_info.find("NIT_RECEPTOR").text]["iva_recibido"] += float(dte_info.find("IVA").text)
+                    data[dte_info.find("FECHA").text]["total_iva"] += float(dte_info.find("TOTAL").text)
+                    data[dte_info.find("FECHA").text]["total_sin_iva"] += float(dte_info.find("VALOR").text)
 
         if data != {}:
             found = True
