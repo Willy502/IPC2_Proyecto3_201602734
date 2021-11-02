@@ -19,10 +19,6 @@ def resumen_iva(fecha):
 def resumen_rango(fecha_start, fecha_end):
     return SelectController().select_iva_by_date_range_and_nit(date_start = fecha_start, date_end = fecha_end)
 
-@application.route(f'{API_BASE_ROUTE}/Grafica')
-def grafica():
-    return onSuccess(message = 'It Works')
-
 @application.route(f'{API_BASE_ROUTE}/Procesar', methods = ['POST'])
 def procesar():
     return ProcessController().process(request=request)
