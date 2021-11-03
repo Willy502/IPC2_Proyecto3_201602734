@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="col-6 mt-5 mb-3">
+    <form action="loaded" method="POST">
+        {% csrf_token %}
+        <div class="col-12">
+            <label for="file">Archivo de entrada XML</label>
+            <div class="input-group mb-3">
+                <input type="file" id="file" accept=".xml" class="form-control" placeholder="Archivo de entrada XML" aria-label="Archivo de entrada XML" required>
+                <div class="input-group-append">
+                  <button class="btn btn-primary" type="submit">Cargar Archivo</button>
+                </div>
+              </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
