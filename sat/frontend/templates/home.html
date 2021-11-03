@@ -2,17 +2,28 @@
 
 {% block content %}
 <div class="col-6 mt-5 mb-3">
-    <form action="loaded" method="POST">
+    <form action="loaded" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="col-12">
             <label for="file">Archivo de entrada XML</label>
             <div class="input-group mb-3">
-                <input type="file" id="file" accept=".xml" class="form-control" placeholder="Archivo de entrada XML" aria-label="Archivo de entrada XML" required>
+                <input type="file" id="file" name="xml-file" accept=".xml" class="form-control" placeholder="Archivo de entrada XML" aria-label="Archivo de entrada XML" required>
                 <div class="input-group-append">
                   <button class="btn btn-primary" type="submit">Cargar Archivo</button>
                 </div>
               </div>
         </div>
     </form>
+</div>
+
+<div class="col-12">
+    <div class="row">
+        <div class="col-6">
+            hola
+        </div>
+        <div class="col-6">
+            saludos
+        </div>
+    </div>
 </div>
 {% endblock %}
