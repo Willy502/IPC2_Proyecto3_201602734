@@ -24,3 +24,6 @@ def load(request):
                 'entrada' : file_readed
             }
     return render(request, 'home.html', context = context)
+
+def graphic(request):
+    return render(request, 'graphics.html')

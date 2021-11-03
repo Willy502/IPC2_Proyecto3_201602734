@@ -16,14 +16,22 @@
     </form>
 </div>
 
-<div class="col-12">
+<div class="col-12 mb-5">
     <div class="row">
-        <div class="col-6">
-            {{ entrada }}
-        </div>
-        <div class="col-6">
-            {{ salida }}
-        </div>
+        {% if entrada %}
+            <div class="col-6">
+                <h3>Entrada</h3>
+                <div class="border border-secondary p-3">
+                    <pre lang="xml">{{ entrada }}</pre>
+                </div>
+            </div>
+            <div class="col-6">
+                <h3>Salida</h3>
+                <div class="border border-secondary p-3">
+                    <pre lang="xml">{{ salida }}</pre>
+                </div>
+            </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
