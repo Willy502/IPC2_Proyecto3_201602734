@@ -1,0 +1,92 @@
+{% extends "base.html" %} {% block content %}
+<div class="container col-8 mt-5">
+  <form action="iva_range" method="POST">
+    {% csrf_token %}
+    <div class="col-6">
+      <label for="file">Rango de fechas</label>
+      <div class="row mb-3">
+        <div class="col-6">
+            <input
+          type="text"
+          class="form-control readonly"
+          name="date_1"
+          id="datepicker1"
+          placeholder="Fecha para filtrar el IVA"
+          required
+        />
+        </div>
+        <div class="col-6">
+            <input
+          type="text"
+          class="form-control readonly"
+          name="date_2"
+          id="datepicker2"
+          placeholder="Fecha para filtrar el IVA"
+          required
+        />
+        </div>
+      </div>
+      <div class="col-12 mb-3">
+        <select class="form-select" name="has_iva" aria-label="Default select example" required>
+            <option value="total_iva">Valores totales (con IVA)</option>
+            <option value="total_sin_iva">Valores sin IVA</option>
+          </select>
+      </div>
+      
+      <button class="btn btn-primary" type="submit">Filtrar</button>
+    </div>
+  </form>
+  <script type="text/javascript">
+    $(function () {
+      $("#datepicker1").datepicker();
+      $("#datepicker2").datepicker();
+    });
+  </script>
+</div>
+
+<div class="container col-8 mt-5">
+  <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
+</div>
+
+{{ graph|json_script:"my-data" }}
+{{ has_iva|json_script:"has-iva" }}
+<script type="text/javascript">
+  (function () {
+    "use strict";
+
+    const data = JSON.parse(document.getElementById("my-data").textContent);
+    const has_iva = JSON.parse(document.getElementById("has-iva").textContent);
+    const info_graph = data["data"];
+    let labels = [];
+    let total = [];
+    for (var key in info_graph) {
+      labels.push(key);
+      total.push(info_graph[key][has_iva]);
+    }
+
+    feather.replace({ "aria-hidden": "true" });
+
+    // Graphs
+    var ctx = document.getElementById("myChart").getContext("2d");
+    // eslint-disable-next-line no-unused-vars
+    var myLineChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: has_iva,
+            data: total,
+            backgroundColor: ["rgba(105, 0, 132, .2)"],
+            borderColor: ["rgba(200, 99, 132, .7)"],
+            borderWidth: 2,
+          }
+        ],
+      },
+      options: {
+        responsive: true,
+      },
+    });
+  })();
+</script>
+{% endblock %}
