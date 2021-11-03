@@ -5,5 +5,5 @@ from . import views
 urlpatterns = [
     path('', views.home, name='home'),
     path('loaded', views.load, name="loaded"),
-    path('graphics', views.graphic, name="graphics")
+    path('iva_graphics', views.iva_graphic, name="iva_graphics")
 ]

@@ -1,0 +1,80 @@
+{% extends "base.html" %} {% block content %}
+<div class="container col-8 mt-5">
+  <form action="iva_graphics" method="POST">
+    {% csrf_token %}
+    <div class="col-6">
+      <label for="file">Fecha</label>
+      <div class="input-group mb-3 date" id="datepicker">
+        <input
+          type="text"
+          class="form-control readonly"
+          name="date"
+          placeholder="Fecha para filtrar el IVA"
+          required
+        />
+        <div class="input-group-append">
+          <button class="btn btn-primary" type="submit">Filtrar</button>
+        </div>
+      </div>
+    </div>
+  </form>
+  <script type="text/javascript">
+    $(function () {
+      $("#datepicker").datepicker();
+    });
+  </script>
+</div>
+
+<div class="container col-8 mt-5">
+  <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
+</div>
+
+{{ graph|json_script:"my-data" }}
+<script type="text/javascript">
+  (function () {
+    "use strict";
+
+    const data = JSON.parse(document.getElementById("my-data").textContent);
+    const info_graph = data["data"];
+    let labels = [];
+    let iva_emitido = [];
+    let iva_recibido = [];
+    for (var key in info_graph) {
+      labels.push(key);
+      iva_emitido.push(info_graph[key]["iva_emitido"]);
+      iva_recibido.push(info_graph[key]["iva_recibido"]);
+    }
+
+    feather.replace({ "aria-hidden": "true" });
+
+    // Graphs
+    var ctx = document.getElementById("myChart").getContext("2d");
+    // eslint-disable-next-line no-unused-vars
+    var myLineChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "IVA Emitido",
+            data: iva_emitido,
+            backgroundColor: ["rgba(105, 0, 132, .2)"],
+            borderColor: ["rgba(200, 99, 132, .7)"],
+            borderWidth: 2,
+          },
+          {
+            label: "IVA Recibido",
+            data: iva_recibido,
+            backgroundColor: ["rgba(0, 137, 132, .2)"],
+            borderColor: ["rgba(0, 10, 130, .7)"],
+            borderWidth: 2,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+      },
+    });
+  })();
+</script>
+{% endblock %}

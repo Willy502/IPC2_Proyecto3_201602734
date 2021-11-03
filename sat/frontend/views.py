@@ -1,4 +1,6 @@
 import requests
+from datetime import datetime
+import json
 
 from django.http import HttpResponse
 
@@ -25,5 +27,16 @@ def load(request):
             }
     return render(request, 'home.html', context = context)
 
-def graphic(request):
-    return render(request, 'graphics.html')
+def iva_graphic(request):
+    context = {}
+    if request.method == 'POST':
+        date_picked = request.POST.get('date').replace("/", "-")
+        date_formated = date_picked.split("-")[1] + "-" + date_picked.split("-")[0] + "-" + date_picked.split("-")[2]
+        response = requests.get('http://127.0.0.1:5000/api/v1/ResumenIva/' + date_formated)
+        data = response.json()
+        print(data)
+        context = {
+            'graph' : data
+        }
+
+    return render(request, 'iva_graphics.html', context = context)
