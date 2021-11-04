@@ -13,7 +13,14 @@ from django.shortcuts import render
 
 # Create your views here.
 def home(request):
-    return render(request, 'home.html')
+    response_info = requests.get('http://127.0.0.1:5000/api/v1/ConsultaDatos')
+    json_data = response_info.json()
+    context = {}
+    if 'data' in json_data:
+        context = {
+            'salida' : response_info.json()['data']
+        }
+    return render(request, 'home.html', context = context)
 
 def load(request):
     if request.method == 'POST' and request.FILES.get('xml-file'):
