@@ -2,13 +2,11 @@ import requests
 from datetime import datetime
 import json
 import os
-
 import io
+from os.path import dirname as up
 from django.http import FileResponse
 import pdfkit
-
 from django.http import HttpResponse
-
 from django.shortcuts import render
 
 # Create your views here.
@@ -97,3 +95,14 @@ def help(request):
 def reset(request):
     response = requests.delete('http://127.0.0.1:5000/api/v1/Reset')
     return render(request, 'help.html')
+
+def download_doc(request):
+    # Create a file-like buffer to receive PDF data.
+    BASEDIR = up(up(os.path.abspath(os.path.dirname(__file__))))
+    
+    file_path = BASEDIR + "/doc/documentacion.pdf"
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response

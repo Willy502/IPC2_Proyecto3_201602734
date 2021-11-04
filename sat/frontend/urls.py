@@ -9,5 +9,6 @@ urlpatterns = [
     path('iva_range', views.iva_range, name="iva_range"),
     path('download', views.download, name="download"),
     path('help', views.help, name="help"),
-    path('reset', views.reset, name="reset")
+    path('reset', views.reset, name="reset"),
+    path('download_doc', views.download_doc, name="download_doc")
 ]
