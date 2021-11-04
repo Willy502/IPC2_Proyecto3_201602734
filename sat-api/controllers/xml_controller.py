@@ -8,6 +8,17 @@ from controllers.response_controller import onError, onSuccess
 
 class XmlController:
 
+    def reset_data(self):
+        auth_route = BASEDIR + XML_DATABASE
+        info_route = BASEDIR + XML_DATABASE_INFO
+        if os.path.isfile(auth_route) == True:
+            os.remove(auth_route)
+
+        if os.path.isfile(info_route) == True:
+            os.remove(info_route)
+
+        return onSuccess(message = 'The database has been deleted')
+
     def create_authorizations_file(self):
         auth_route = BASEDIR + XML_DATABASE
         info_route = BASEDIR + XML_DATABASE_INFO

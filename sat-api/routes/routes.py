@@ -11,6 +11,10 @@ application = Blueprint('routes', __name__)
 def consulta_datos():
     return XmlController().read_all_file()
 
+@application.route(f'{API_BASE_ROUTE}/Reset', methods = ['DELETE'])
+def reset_data():
+    return XmlController().reset_data()
+
 @application.route(f'{API_BASE_ROUTE}/ResumenIva/<fecha>')
 def resumen_iva(fecha):
     return SelectController().select_iva_by_date_and_nit(date = fecha)
