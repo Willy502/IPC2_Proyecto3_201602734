@@ -77,6 +77,7 @@ class XmlController:
         auth_route = BASEDIR + XML_DATABASE
         tree = ET.parse(auth_route)
         root = tree.getroot()
+        correlativo = 1
 
         for dte_filt in counter_information:
             auth = ET.SubElement(root, "AUTORIZACION")
@@ -95,7 +96,9 @@ class XmlController:
             for approved in counter_information[dte_filt]["info"]["dtes"]:
                 aprob = ET.SubElement(autorizaciones, "APROBACION")
                 ET.SubElement(aprob, "NIT_EMISOR", ref=approved.referencia).text = str(approved.nit_emisor)
-                ET.SubElement(aprob, "CODIGO_APROBACION").text = str(datetime.today().strftime('%d%m%Y')) # TODO: FALTA CORRELATIVO
+                correlativo_str = str(correlativo).zfill(8)
+                ET.SubElement(aprob, "CODIGO_APROBACION").text = str(datetime.today().strftime('%Y%m%d') + correlativo_str)
+                correlativo += 1
             ET.SubElement(autorizaciones, "TOTAL_APROBACIONES").text = str(counter_information[dte_filt]["info"]["total_dte_no_errors"])
 
         tree = ET.ElementTree(root)
