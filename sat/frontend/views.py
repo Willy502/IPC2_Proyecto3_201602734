@@ -83,3 +83,10 @@ def download(request):
         response = HttpResponse(pdf, content_type='attachment;application/pdf')
         response['Content-Disposition'] = 'attachment;filename="peticion.pdf"'
     return response 
+
+def help(request):
+    return render(request, 'help.html')
+
+def reset(request):
+    response = requests.delete('http://127.0.0.1:5000/api/v1/Reset')
+    return render(request, 'help.html')
