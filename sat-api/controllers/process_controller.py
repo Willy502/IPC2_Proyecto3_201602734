@@ -125,20 +125,24 @@ class ProcessController:
         dig_nit_rev = list(reversed(dig_nit))
         suma = 0
         base = 1
-        for n in dig_nit_rev:
-            base += 1
-            suma += int(n) * base
 
-        result = suma % 11
-        comp = 11 - result
-        new_comp = comp % 11
+        try:
+            for n in dig_nit_rev:
+                base += 1
+                suma += int(n) * base
 
-        if new_comp == 10:
-            if dig_validador == "k":
-                valid = True
-        else:
-            if new_comp == int(dig_validador):
-                valid = True
+            result = suma % 11
+            comp = 11 - result
+            new_comp = comp % 11
+
+            if new_comp == 10:
+                if dig_validador == "k":
+                    valid = True
+            else:
+                if new_comp == int(dig_validador):
+                    valid = True
+        except:
+            print("Nit with errors")
         
         return valid
 
