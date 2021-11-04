@@ -1,6 +1,11 @@
 import requests
 from datetime import datetime
 import json
+import os
+
+import io
+from django.http import FileResponse
+import pdfkit
 
 from django.http import HttpResponse
 
@@ -58,3 +63,23 @@ def iva_range(request):
         }
 
     return render(request, 'range.html', context = context)
+
+def download(request):
+    # Create a file-like buffer to receive PDF data.
+    data = request.POST.get('peticion')
+    
+    options = {
+        'page-size': 'Letter',
+        'margin-top': '0.75in',
+        'margin-right': '0.75in',
+        'margin-bottom': '0.75in',
+        'margin-left': '0.75in',
+        'encoding': 'UTF-8'
+    }
+    data_string = str(data)
+    print(data_string)
+    pdf = pdfkit.from_string(data_string, False, options = options)
+    if pdf:
+        response = HttpResponse(pdf, content_type='attachment;application/pdf')
+        response['Content-Disposition'] = 'attachment;filename="peticion.pdf"'
+    return response 

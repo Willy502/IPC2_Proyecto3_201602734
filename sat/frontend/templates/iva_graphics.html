@@ -1,5 +1,5 @@
 {% extends "base.html" %} {% block content %}
-<div class="container col-8 mt-5">
+<div class="col-8 mt-5">
   <form action="iva_graphics" method="POST">
     {% csrf_token %}
     <div class="col-6">
@@ -18,12 +18,23 @@
       </div>
     </div>
   </form>
-  <script type="text/javascript">
-    $(function () {
-      $("#datepicker").datepicker();
-    });
-  </script>
 </div>
+<div class="col-4 mt-5">
+  <br>
+  {% if graph %}
+  <form action="download" method="POST">
+      {% csrf_token %}
+      <input type="hidden" value="{{ graph }}" name="peticion">
+      <button class="btn btn-success" type="submit">Descargar PDF de petición</button>
+  </form>
+  {% endif %}
+</div>
+
+<script type="text/javascript">
+  $(function () {
+    $("#datepicker").datepicker();
+  });
+</script>
 
 <div class="container col-8 mt-5">
   <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
